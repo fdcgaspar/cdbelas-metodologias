@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de Metodologia CD Belas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: fixed black masthead, sticky index at left, one reading column; a dark stage overlays it for projection. */
+:root{
+  --black:#0E0E0E;
+  --ink:#16160F;
+  --paper:#F3F3F0;
+  --panel:#FFFFFF;
+  --gold:#A8841C;
+  --gold-bright:#C9A227;
+  --gold-wash:rgba(201,162,39,.16);
+  --line:#DAD8D1;
+  --muted:#6A685F;
+  --display:"Archivo","Arial Narrow",Helvetica,sans-serif;
+  --body:"Source Sans 3",-apple-system,Segoe UI,Roboto,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:16.5px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold-bright);outline-offset:2px}
+
+/* ---------- masthead ---------- */
+.mast{position:sticky;top:0;z-index:40;background:var(--black);color:#fff;
+  display:flex;align-items:center;gap:16px;padding:10px 20px;border-bottom:3px solid var(--gold)}
+.mast .plaque{width:40px;height:40px;border-radius:7px;background:#fff;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.mast .plaque img{width:30px;height:39px;display:block}
+.mast .who{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.mast .who b{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;color:var(--gold-bright)}
+.mast .who span{font-size:12.5px;color:#C9C7BF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mast .spacer{flex:1}
+.modes{display:flex;gap:6px;background:#1E1E1C;border-radius:999px;padding:4px}
+.modes button{font:600 13px/1 var(--body);color:#C9C7BF;background:none;border:0;
+  padding:8px 14px;border-radius:999px;cursor:pointer}
+.modes button[aria-pressed="true"]{background:var(--gold-bright);color:#141208}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);gap:34px;
+  max-width:1180px;margin:0 auto;padding:28px 20px 90px}
+nav.index{position:sticky;top:78px;align-self:start;max-height:calc(100vh - 100px);overflow:auto}
+nav.index p{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);margin:18px 0 7px}
+nav.index p:first-child{margin-top:0}
+nav.index a{display:block;text-decoration:none;font-size:14px;padding:5px 10px;border-left:2px solid var(--line);
+  color:var(--muted)}
+nav.index a:hover{color:var(--ink);border-left-color:var(--gold)}
+nav.index a.on{color:var(--ink);font-weight:600;border-left-color:var(--gold);background:var(--gold-wash)}
+
+main{min-width:0}
+section{margin:0 0 56px;scroll-margin-top:92px}
+.eyebrow{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+h2{font-size:30px;font-weight:800;line-height:1.1;margin-bottom:10px}
+h3{font-size:19px;font-weight:700;margin:26px 0 8px}
+h4{font-size:14.5px;font-weight:700;margin:18px 0 6px;letter-spacing:.02em}
+.lede{font-size:18px;color:#3A382F;max-width:66ch;margin-bottom:18px}
+p{max-width:68ch;margin:0 0 12px}
+.hr{height:2px;background:var(--black);margin:0 0 22px;max-width:120px}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel);margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;font-variant-numeric:tabular-nums}
+th{font-family:var(--display);font-weight:700;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+  text-align:left;background:var(--black);color:#fff;padding:10px 12px;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even) td{background:#FAFAF8}
+td.n{white-space:nowrap}
+
+/* ---------- cards ---------- */
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(248px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card .num{font-family:var(--display);font-weight:800;font-size:13px;color:var(--gold);letter-spacing:.08em}
+.card h4{margin:4px 0 6px;font-size:16px}
+.card p{font-size:14.5px;color:#45433A;margin:0}
+
+/* ---------- etapas ---------- */
+.etapas{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:16px 0}
+.etapa{background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--black);
+  border-radius:10px;padding:16px 18px}
+.etapa.lead{border-top-color:var(--gold-bright)}
+.etapa b{display:block;font-family:var(--display);font-weight:800;font-size:19px}
+.etapa .sc{font-size:13px;color:var(--muted);margin:2px 0 8px}
+.etapa .fm{display:inline-block;font-weight:700;font-size:13px;background:var(--gold-wash);
+  border:1px solid rgba(168,132,28,.35);border-radius:999px;padding:3px 10px;margin-bottom:10px}
+.etapa ul{margin:0;padding-left:17px;font-size:14px;color:#45433A}
+.gate{background:var(--black);color:#fff;border-radius:10px;padding:13px 16px;margin:12px 0;
+  display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.gate b{font-family:var(--display);font-weight:800;color:var(--gold-bright);font-size:13px;letter-spacing:.1em;
+  text-transform:uppercase;white-space:nowrap}
+.gate span{font-size:15px}
+
+/* ---------- stacked bars ---------- */
+.dist{margin:16px 0}
+.distrow{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;align-items:center;margin-bottom:7px}
+.distrow .lb{font-weight:700;font-size:13.5px}
+.bar{display:flex;height:26px;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;font-style:normal;font-size:11px;font-weight:700;color:#fff;
+  display:flex;align-items:center;justify-content:center}
+.s1{background:var(--gold-bright);color:#141208 !important}
+.s2{background:#3C3A33}
+.s3{background:#8C897D}
+.s4{background:#CFCCC2;color:#3A382F !important}
+.key{display:flex;flex-wrap:wrap;gap:16px;font-size:13.5px;color:var(--muted);margin-top:10px}
+.key span{display:flex;align-items:center;gap:7px}
+.key i{width:13px;height:13px;border-radius:3px;display:block}
+
+/* ---------- escalão ---------- */
+.esc{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.esc > header{background:var(--black);color:#fff;padding:16px 20px;display:flex;gap:16px;
+  align-items:center;flex-wrap:wrap}
+.esc .tag{font-family:var(--display);font-weight:800;font-size:25px;color:var(--gold-bright);line-height:1}
+.esc .nm{font-family:var(--display);font-weight:700;font-size:17px}
+.esc .meta{font-size:13px;color:#BFBDB4}
+.esc .pills{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
+.pill{font-size:12px;font-weight:700;border-radius:999px;padding:4px 11px;white-space:nowrap;
+  background:rgba(201,162,39,.2);color:var(--gold-bright);border:1px solid rgba(201,162,39,.45)}
+.pill.plain{background:#262522;color:#D8D6CD;border-color:#3A3833}
+.esc .body{padding:18px 20px 20px}
+.esc .foco{font-size:16.5px;font-weight:600;border-left:3px solid var(--gold);padding-left:13px;margin-bottom:16px}
+.two{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+ul.tick{list-style:none;margin:0;padding:0;font-size:14.5px}
+ul.tick li{position:relative;padding-left:19px;margin-bottom:6px}
+ul.tick li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:2px;background:var(--gold)}
+.warn{background:#1C1B18;color:#E6E3D9;border-radius:9px;padding:12px 15px;font-size:14px;margin-top:16px}
+.warn b{color:var(--gold-bright)}
+
+/* ---------- matriz famílias ---------- */
+.mx{overflow-x:auto;margin:16px 0}
+.mx table{min-width:660px;border-collapse:separate;border-spacing:3px}
+.mx th{background:none;color:var(--ink);text-align:center;padding:4px;font-size:11.5px}
+.mx th.fam{text-align:left;width:250px}
+.mx td{border:0;padding:0}
+.mx td.fam{font-size:14px;padding:4px 8px 4px 0;border:0;background:none !important}
+.cell{height:26px;border-radius:5px;border:1px solid var(--line)}
+.cell.n2{background:var(--gold-bright);border-color:var(--gold)}
+.cell.n1{background:var(--gold-wash);border-color:rgba(168,132,28,.4)}
+.cell.n0{background:var(--panel)}
+
+/* ---------- pitches ---------- */
+.pitches{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:16px 0}
+.pitch{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+.pitch b{display:block;font-family:var(--display);font-weight:800;font-size:15px}
+.pitch .sc{font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.pitch svg{width:100%;height:auto;display:block}
+.pitch .st{font-weight:700;font-size:13.5px;margin-top:8px}
+.pitch .nt{font-size:12.5px;color:var(--muted)}
+
+.note{font-size:14px;color:var(--muted);max-width:68ch}
+.foot{border-top:2px solid var(--black);margin-top:40px;padding-top:16px;font-size:13px;color:var(--muted)}
+
+/* ---------- stage (apresentação) ---------- */
+.stage{position:fixed;inset:0;z-index:90;background:var(--black);color:#F4F3EE;display:none;
+  flex-direction:column}
+body.present .stage{display:flex}
+body.present{overflow:hidden}
+.board{flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:min(7vh,64px) min(7vw,76px);overflow:auto}
+.board .eb{font-family:var(--display);font-weight:700;font-size:clamp(11px,1.3vw,14px);letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold-bright);margin-bottom:14px}
+.board h2{font-size:clamp(26px,4.4vw,58px);line-height:1.04;color:#fff;margin-bottom:18px;max-width:20ch}
+.board .sub{font-size:clamp(15px,1.8vw,23px);color:#BFBDB3;max-width:46ch;margin-bottom:22px}
+.board ul{list-style:none;margin:0;padding:0;columns:1;max-width:1000px}
+.board ul.two-col{columns:2;column-gap:46px}
+.board li{font-size:clamp(14px,1.55vw,20px);line-height:1.4;margin-bottom:13px;
+  padding-left:22px;position:relative;break-inside:avoid;color:#E8E6DE}
+.board li::before{content:"";position:absolute;left:0;top:.55em;width:9px;height:9px;background:var(--gold-bright);border-radius:2px}
+.board li b{color:#fff}
+.board .big{display:flex;gap:28px;flex-wrap:wrap;margin-top:6px}
+.board .big div{flex:1 1 180px}
+.board .big .v{font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,62px);color:var(--gold-bright);line-height:1}
+.board .big .k{font-size:14px;color:#AFACA2;margin-top:4px}
+.board .quote{font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,38px);
+  line-height:1.2;color:#fff;border-left:5px solid var(--gold-bright);padding-left:22px;max-width:24ch}
+.cover{align-items:flex-start}
+.cover .plaquebig{width:92px;height:92px;border-radius:12px;background:#fff;display:flex;
+  align-items:center;justify-content:center;margin-bottom:26px}
+.cover .plaquebig img{width:66px;height:85px}
+.stagebar{display:flex;align-items:center;gap:14px;padding:12px 22px;border-top:1px solid #272622}
+.stagebar .ct{font-family:var(--display);font-weight:700;font-size:13px;color:var(--gold-bright);
+  letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.stagebar .tt{font-size:13px;color:#86847C;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stagebar button{font:600 13px/1 var(--body);background:#1E1E1C;color:#D8D6CD;border:1px solid #302F2A;
+  border-radius:7px;padding:9px 14px;cursor:pointer}
+.stagebar button:hover{border-color:var(--gold)}
+.prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:#242320}
+.prog i{display:block;height:100%;background:var(--gold-bright);transition:width .18s}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.index{position:static;max-height:none;margin-bottom:26px;
+    display:flex;flex-wrap:wrap;gap:6px}
+  nav.index p{width:100%;margin:10px 0 2px}
+  nav.index a{border-left:0;border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+  nav.index a.on{border-color:var(--gold)}
+  .board ul.two-col{columns:1}
+}
+@media print{
+  .mast,nav.index,.stage{display:none !important}
+  .shell{display:block;max-width:none;padding:0}
+  section{break-inside:avoid}
+  body{background:#fff;font-size:11pt}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <span class="plaque"><img id="logo" alt="Clube Desportivo de Belas" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAAB4BAMAAABiPuN1AAAAGFBMVEX9/f0LCQmioKFhX19APT6Afn9CP0CBf4AiRc+XAAAACHRSTlP///////////OBUtQAAAWESURBVHjaxVhBcts2FH34zETyIiIgLaqkEwuyZtpJMpOQ9gWaG/QKvUGP0qP0CD2B467aTS1YnqntdCqC8kxJOSOgC4kiQIKOvUm4sUU8fuI/PPz/QOArXJEYYTTCcWCIAuDEskn0coL5sI1/0rpjJpeMGVKarFym9uze+KkEYWCM2jBuAWaj5tt9OP0BVhyIdZzd9cfrfPxnX5/0dGd8vR0yuIwOuZosh+A0X3XMh8SPailhgIUdDFY5NBQW9nBCMoh/l/8GUgDL8T7OxEACkjbJ5YLdhkiXUwwxYhxH9T2WyjSVmA7b+Ub25iQe81JeZ06Q/mJNc8zi6/a6HUeceJo0+eMnIA7WxLMkwgnxwDwFWIK0FX9InJ3IAP4IKSIeJT4/ZmKOsFEB/Dld4JAb794UYHzWJVeJEVJMndSmCZAOO/XNOIbkDBONcETd+4FkNDyu+ae4GMu+Jyv/slrenUfDYpevjXFxyZRPCh25v/kzGvAqAQbI1KdyNJye+MvJEvD9GqLJDU9/aqxdiojv5rNhMA38MX5trN0F3upKb2uxLvzRVT7J/fxf92+KvT5fPG2Q83rzSfiEfWTLL1HKGEg+HG3UE0yyh+MtCItHzIaDAeLh+AwEyEckCwYwjlQ9YO4aVoMBFMPqBwTniBUIMM2qG74SkNrqjcN8PgdS2Oz0uQC65pO6ucpKz6G21LwOgbOqH3Ftm0VKAMiMqnnT25hsl/rE7VOzvXTp3+qfHYnVQ+4CpEtM40xIXzlwNmgqRoEfMyG+qW8Kp/7f9O24omh6XU0ie16aap+uwYq63lLNaKTxrAo6l05bOXTqs8PoWziVa0+CqQJSJewdo5HaBfK74VYM9R0FJO6y1Ky4YqjxDLt9putWdXTkPic9vJHbWAQYUDpKhaQsHplB1TGqt1KdmawmYPTLD3xlZGaqZazfSvVfvY8F4MI6mt1uEg+/2S6drAmUINYWA9Wlwuyp2r0mM3s29/ra4xcVo06nruKrmrQ9fgO/cikFIxNfDJ6fkbCAqu5EFrzi0F1DcrUi92tKAw7wRO9So4B/oz7KMuoB45W8fGUUlXl+BQBUwpQhIyJGICFE06QwIX4O+TEOI41Ey+tI4JcQfgH8gDO0eNVuBOY7oyXFALwOEg3c8kreiy0MB+A5FeNVBhd/BiSYA7D7Byipt1YLvy1DKwB2tBXeLAYUbId/tq90VMB+6gF2ffDmxXhdkL3tYXIdznfXEkDvqglMTzHVXvosSAVJAVh9DuD92b6GtvAQaLqEZrOiRn+1rQ59X/9kQjQWdyrEPecL6kOXjZbLiu7zi5GNABEa1qvRuM4ardIXQxtPjVbpi6GN3/gZkWoSRi3HYvzRw88dHV1Gm2y2nQPrY1W4bq24fz5VYa8GN587n545ArBNNgN45jAq/T4exLtuSLfPURTwgKZLDEF8XdhNe/oBfF3YW2II4lExWjfd+/EVoyy0tSjoSnW71XfjK0Z1aJCCrtrIoBg68Ft/GRBDB37rhpK2GDrw2zKk2mLowisgicJbiwW9cgybc2QPjW8koiQ8xLq8PsKHgrDRJqCjzobjQzS75P3xwbsidZxE8j5s+Yj4LCiGe65U4HHn0I6vEV0HFzL4KpfL8mzAThElgD09sacAKLWnwExPlirAf2RYwUr6T5iLYjwvAbAiL8BYfDW+DuDtwZU+GOd9c/dUH5QlAOpRAdb/++4q+P0NMoJiGGlV2QlhjgF7bIJ8TpAPGAY4r8u/wVwyzJ0WRe4Xjzi3yQpZbTlyMGWyobwM4Q2UkcpWyp/BWskZouSv301In9Qf3xbyY28sboupvrPjqVa3T8f8n4L6RYjP3rffHXyQ5bq0b+bR9/pTRgX17p7H64OB/lJ6+B8AY8tDZkvHTwAAAABJRU5ErkJggg=="></span>
+  <span class="who">
+    <b>CD BELAS</b>
+    <span>Departamento de Formação · Metodologia de Treino · Sub-7 a Sub-13</span>
+  </span>
+  <span class="spacer"></span>
+  <div class="modes" role="group" aria-label="Modo de visualização">
+    <button id="mEstudo" aria-pressed="true">Estudo</button>
+    <button id="mApres" aria-pressed="false">Apresentação</button>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="index" id="idx" aria-label="Índice"></nav>
+  <main id="main"></main>
+</div>
+
+<div class="stage" id="stage" role="dialog" aria-label="Modo de apresentação" aria-modal="true">
+  <div class="board" id="board"></div>
+  <div class="stagebar">
+    <span class="ct" id="ct">1 / 1</span>
+    <span class="tt" id="tt"></span>
+    <button id="prev" type="button">Anterior</button>
+    <button id="next" type="button">Seguinte</button>
+    <button id="sair" type="button">Sair</button>
+  </div>
+  <div class="prog"><i id="prog" style="width:0%"></i></div>
+</div>
+
+<script>
+/* ============ DADOS ============ */
+var PRINCIPIOS=[
+ ["O jogo é o meio e o fim","No mínimo 65% do tempo útil em situação de jogo. O exercício analítico isolado nunca passa de 15% da sessão."],
+ ["Máximo contacto com a bola","Uma bola por jogador até ao Sub-11, nunca menos de uma por dois nos Sub-12 e Sub-13. Filas únicas interditas."],
+ ["Rotação posicional até ao Sub-11","Todos passam por todos os sectores. A especialização começa no Sub-12 e é reversível até ao Sub-15."],
+ ["Densidade acima de tudo","Tempo útil mínimo de 80% e máximo de seis jogadores por estação. Contam as acções com bola, não as explicações ouvidas."],
+ ["Intervenção por questionamento","Pergunta, tempo de decisão, correcção depois. A instrução contínua retira ao jogador a leitura autónoma do jogo."],
+ ["Progressão por conteúdo","O escalão define o enquadramento competitivo; o conteúdo segue o nível real do grupo e do jogador."],
+ ["Um único modelo de jogo","Largura, espaço entre linhas e reacção à perda em sete segundos, declinados do Futebol 5 ao Futebol 11."],
+ ["O erro é instrumento","O erro de execução corrige-se; o erro de decisão explora-se. Nenhum escalão desta faixa é avaliado pelo resultado."]
+];
+
+var QUALIDADE=[
+ ["Tempo útil de treino","≥ 80% da sessão","Cronometragem em observação"],
+ ["Tempo em situação de jogo","≥ 65% do tempo útil","Ficha de sessão"],
+ ["Rácio bola/jogador","1:1 Sub-7 a Sub-11 · ≥ 1:2 Sub-12/13","Inventário de material"],
+ ["Jogadores por treinador","≤ 12 Sub-7/8 · ≤ 14 Sub-9 a Sub-13","Mapa de recursos humanos"],
+ ["Tempo de jogo por convocado","≥ 50% Sub-7 a Sub-11 · ≥ 40% Sub-12/13","Registo de substituições"],
+ ["Sessões registadas em plataforma","100%","EMJOGO"],
+ ["Avaliações individuais","3 por época","Grelha de avaliação"],
+ ["Sessões observadas por equipa","≥ 6 por época","Relatório de observação"]
+];
+
+var ETAPAS=[
+ {n:"Iniciação",sc:"Sub-7 · Sub-8",fm:"Futebol 3 → Futebol 5",g:["Relação individual com a bola","Hábito e rotina de treino"]},
+ {n:"Aquisição",sc:"Sub-9 · Sub-10 · Sub-11",fm:"Futebol 5 → Futebol 7",g:["Modelo de jogo do clube instalado","Princípios das quatro fases","Pico da aprendizagem motora"],lead:true},
+ {n:"Consolidação",sc:"Sub-12 · Sub-13",fm:"Futebol 7 → 9, depois 11",g:["Especialização posicional","Gestão individual de carga","Entrega ao Futebol 11"]}
+];
+var PASSAGENS=[
+ ["Passagem 1","Domina a bola e já joga com os colegas. Sem isto, o Sub-9 não aprende princípios de jogo: aprende a esconder-se deles."],
+ ["Passagem 2","Cumpre a sua função nas quatro fases. Sem isto, a especialização posicional do Sub-12 não tem sobre o que assentar."]
+];
+
+var DIMS=["Táctica","Técnica","Física e coordenativa","Psicossocial"];
+var DIST=[
+ ["Sub-7",5,45,30,20],["Sub-8",12,45,25,18],["Sub-9",20,40,22,18],["Sub-10",26,37,20,17],
+ ["Sub-11",30,35,20,15],["Sub-12",35,30,20,15],["Sub-13",38,26,21,15]
+];
+
+var ESC=[
+ {id:"sub-7",tag:"Sub-7",nm:"Petizes",meta:"Juniores «G» · AF Lisboa",fmt:"Futebol 3",est:"Sem sistema",
+  campo:"3x3 · 15 x 10 m · balizas 1,20 x 0,90 m · 2 x 10 min",
+  foco:"Construir a relação individual com a bola e o hábito de treino. Não se ensina organização colectiva.",
+  carac:"Pensamento concreto e egocentrismo motor. A atenção numa tarefa dura 5 a 8 minutos. A noção de equipa é mínima: joga-se com a bola, não com os colegas. É a janela de ouro da coordenação.",
+  obj:["Conduzir com interior e exterior dos dois pés, sem olhar sempre para a bola","Percorrer 10 m em condução controlada com mudança de direcção","Rematar com interior e trincha a 6-8 m","Passe de interior a 5 m e recepção com sola e interior","Resolver 1x1 com uma mudança de direcção ou de velocidade","Com bola, orientar-se à baliza; sem bola, ir buscá-la","Calçar, vestir, arrumar o material e cumprimentar"],
+  cont:[["Técnica","Condução, fintas básicas, remate, recepção simples, condução-remate"],["Táctica individual","Orientação à baliza, procura do espaço livre, não aglomerar na bola"],["Coordenativa","Corrida em todas as direcções, travagens, saltos, equilíbrio, ritmo, lateralidade"],["Psicossocial","Regras, respeito pelo adversário, esperar a vez, arrumar o material"]],
+  nao:"Organização defensiva colectiva, posicionamentos fixos, bola parada elaborada, cabeceamento, força com carga externa.",
+  mic:"2 sessões de 60 min · 120 min/semana · 1 jogo",
+  ses:[["Activação lúdica","10","Perseguições com bola, apanhadas, domínios"],["Bloco técnico em forma jogada","15","Condução, condução-remate, 1x1 em estações de até 6"],["Jogos reduzidos","20","1x1, 2x2 e 3x3 em campos simultâneos"],["Jogo final","10","3x3 em balizas pequenas; 5x5 com GR uma vez por semana"],["Retorno e rotina","5","Arrumação do material e palavra final"]],
+  ex:[["Apanhada com bola","Todos conduzem a sua bola, dois caçadores tocam. Condução sob pressão de espaço e visão periférica."],["Jogo dos quatro cantos","Quatro balizas pequenas, 3x3, golo em qualquer baliza. Força mudança de orientação."],["Rio de crocodilos","Defensores deslocam-se só lateralmente; atacantes atravessam em condução. 1x1 e mudança de velocidade."],["Estádio","1x1 contínuo com reposição imediata do treinador. Elimina filas e maximiza acções decisivas."]]},
+
+ {id:"sub-8",tag:"Sub-8",nm:"Traquinas B",meta:"Juniores «F» · AF Lisboa",fmt:"Futebol 5",est:"Sem sistema fixo",
+  campo:"GR + 4x4 + GR · 35 x 20 m · balizas 2,40 x 1,70 m · 2 x 15 min",
+  foco:"Transferir a competência individual para um contexto com colegas: passe com intenção, espaço próprio e uma baliza a defender.",
+  carac:"Surge a noção de colega e de espaço. O passe passa a ser solução e não perda de posse. O campo maior obriga a levantar a cabeça, o que torna o varrimento visual o conteúdo decisivo do ano.",
+  obj:["Conduzir com cabeça levantada, varrendo o campo","Passe curto e médio até 10 m sob oposição leve","Primeiro toque dirigido ao espaço livre, nunca para os pés","Rematar em movimento com ambos os pés","Resolver o 1x1 com duas soluções distintas de finta","Aproximar em diagonal, orientar o corpo, não cruzar as pernas","Oferecer-se em apoio e ocupar a largura","Nomear as quatro fases: temos, perdemos, não temos, ganhámos"],
+  cont:[["Técnica","Condução orientada, passe curto e médio, recepção orientada, remate em movimento, fintas"],["Táctica","1x1 ofensivo e defensivo, desmarcação de apoio, introdução à ruptura, largura, cobertura a dois"],["Coordenativa","Velocidade de reacção, agilidade, coordenação óculo-pedal, trabalho bilateral obrigatório"],["Psicossocial","Cooperação em pares, aceitação do erro do colega, cumprimento das regras do exercício"]],
+  nao:"Métodos colectivos fechados, pressão organizada por zonas, bola parada ensaiada, força com carga externa.",
+  mic:"2 sessões de 75 min · 150 min/semana · 1 jogo",
+  ses:[["Activação com bola","10","Jogos coordenativos, domínios, perseguições com mudança de direcção"],["Bloco técnico em contexto","15","Passe e recepção orientada com oposição leve, quadrados 4x1"],["Jogo reduzido condicionado","20","3x3 e 4x4 com regras: balizas largas, zonas de largura"],["Jogo","20","4x4 e 5x5 com guarda-redes, campo próximo do oficial"],["Finalização e retorno","10","Situação de finalização lúdica, arrumação, balanço"]],
+  ex:[["Quadrado 4x1","Quem perde a bola entra no meio. Passe, recepção orientada e abertura de ângulo."],["Duas balizas largas","4x4 com balizas de 6 m nas laterais; o golo exige bola num corredor. Instala a largura sem discurso."],["3x3 com apoios fixos","Um apoio por equipa fora do campo. Obriga a procurar linha de passe antes de conduzir."],["1x1 com reposição contínua","Bola reposta a cada 12 segundos. Densidade alta, ofensivo e defensivo no mesmo exercício."]]},
+
+ {id:"sub-9",tag:"Sub-9",nm:"Traquinas A",meta:"Juniores «F» · AF Lisboa",fmt:"Futebol 5",est:"Losango 1-1-2-1",
+  campo:"GR + 4x4 + GR · 35 x 20 m · mesmas condições do Sub-8",
+  foco:"Entra o modelo de jogo do clube. Ensina-se a jogar como o CD Belas joga, nas quatro fases, com uma estrutura de referência em campo.",
+  carac:"Abre a fase mais fértil da aprendizagem motora. A atenção sobe para 10 a 15 minutos e o jogador compreende instrução táctica dirigida ao colectivo. Velocidade de reacção em janela sensível: treina-se velocidade, nunca resistência.",
+  obj:["Passe até 15 m com interior e exterior, com ambos os pés","Primeiro toque que retira a bola da zona de pressão","Conduzir em velocidade com corpo entre bola e adversário","Rematar com interior, trincha e bico, parado e em movimento","Executar tabelinha e apoio-devolução em jogo","Escolher entre desmarcação de apoio e de ruptura","Pressionar orientando o portador ao pé fraco ou à linha","Explicar a sua posição no losango, com e sem bola","Após ganho olhar à frente; após perda pressionar de imediato"],
+  cont:[["Técnica","Passe com várias superfícies, recepção sob pressão, condução em velocidade, protecção de bola, remate variado"],["Organização ofensiva","Largura, profundidade, apoio, mobilidade; ocupação racional no losango; 2x1 e 3x2"],["Organização defensiva","Pressão ao portador, cobertura, equilíbrio, orientação da pressão"],["Transições","Reacção imediata à perda; progressão vertical após ganho"],["Física","Velocidade de reacção e aceleração, agilidade, resistência pelo próprio jogo"]],
+  nao:"Resistência contínua, força com carga, pressão zonal elaborada.",
+  mic:"2 a 3 sessões de 75 min · 150 a 225 min/semana · 1 jogo",
+  ses:[["Activação","10","Jogo de activação com bola, mobilidade, coordenação"],["Técnico-táctico","15","2x1, 3x2, quadrados com linhas de passe condicionadas"],["Jogo condicionado","20","Jogo reduzido com a regra que força o princípio da semana"],["Jogo","20","5x5 com guarda-redes, em campo próximo do oficial"],["Finalização e retorno","10","Circuito de finalização, bola parada simples, balanço"]],
+  ex:[["3x2 contínuo para duas balizas","Superioridade com transição imediata ao perder. Decisão em vantagem e reacção à perda juntas."],["Jogo com corredores obrigatórios","4x4 central mais um fixo por corredor; o golo exige passagem por um corredor."],["Sete segundos","5x5: quem perde tem sete segundos para recuperar, senão concede reposição. É a transição defensiva do clube."],["Posse com quatro balizas pequenas","Obriga a mudar o sentido do ataque e desenvolve varrimento visual."]]},
+
+ {id:"sub-10",tag:"Sub-10",nm:"Benjamins B",meta:"Juniores «E» · AF Lisboa",fmt:"Futebol 7",est:"1-3-2-1",
+  campo:"Primeiro ano de Futebol 7",
+  foco:"Entram a linha de três e o duplo médio. Passa-se do jogo a dois para o jogo a três, com construção organizada desde o guarda-redes.",
+  carac:"Pico da aprendizagem motora: a habilidade nova é adquirida com rapidez e fica retida. Emerge a abstracção espacial — zona, corredor, linha, entrelinhas. Intensifica-se a comparação social: o erro público é mal tolerado e o clima de treino exige gestão explícita.",
+  obj:["Passe de 20 a 25 m com interior e bico, raso e por elevação","Primeiro toque à frente, ao lado ou atrás conforme a pressão","Resolver 1x1 contra defesa orientada, com protecção e mudança de ritmo","Rematar de fora da área e de primeira","Cabecear defensiva e ofensivamente em bolas baixas","Executar terceiro homem e apoio-devolução-profundidade","Participar na saída de bola desde o guarda-redes","Condicionar o portador à linha ou ao pé não dominante","Cobrir e bascular a três, mantendo distâncias","Explicar a sua função no 1-3-2-1 em cada sector"],
+  cont:[["Técnica","Passe longo e tenso, primeiro toque em três direcções, remate de primeira, cabeceamento, cruzamento"],["Organização ofensiva","Saída de bola desde o GR, largura máxima, apoio interior, terceiro homem, mobilidade do avançado"],["Organização defensiva","Pressão orientada, cobertura, basculação sectorial, distâncias, defesa da profundidade"],["Transições","Ataque rápido em três passes, reacção imediata, equilíbrio preventivo"],["Esquemas","Introdução ao canto, lateral e livre com duas referências simples"],["Física","Aceleração e mudança de direcção, agilidade, força com peso corporal, prevenção de tornozelo e anca"]],
+  nao:"Pliometria de alta intensidade, força com carga externa, séries longas de resistência.",
+  mic:"3 sessões de 90 min · 270 min/semana · 1 jogo",
+  ses:[["Activação e prevenção","10","Mobilidade, coordenação, activação com bola"],["Bloco técnico","15","Circuitos de passe e primeiro toque com decisão, finalização"],["Bloco sectorial","20","3x2, 4x3, saída GR + 3 contra 2, exercício do princípio da semana"],["Jogo","25","7x7 em campo oficial ou 6x6 condicionado"],["Finalização e esquemas","10","Finalização em superioridade, um esquema táctico"],["Retorno e balanço","10","Alongamentos e balanço por questionamento"]],
+  ex:[["Saída de bola GR + 3 contra 2","GR e três defesas saem contra dois pressionadores, meio-campo como objectivo."],["Jogo com três corredores","7x7 com limite de dois jogadores por corredor. Instala distâncias e ocupação racional."],["Terceiro homem em losango","Passe ao apoio e devolução para o terceiro em profundidade, com defensor passivo e depois activo."],["Pressão orientada","6x6: o golo vale a dobrar se sair do corredor central. Obriga a condicionar a bola para fora."]]},
+
+ {id:"sub-11",tag:"Sub-11",nm:"Benjamins A",meta:"Juniores «E» · AF Lisboa",fmt:"Futebol 7",est:"1-3-2-1 e 1-2-3-1",
+  campo:"Sem mudança de formato à frente: o Sub-12 também é Futebol 7",
+  foco:"O ano de maior exigência técnica da formação de base. Todo o ganho é qualidade de execução, velocidade de decisão e leitura de jogo.",
+  carac:"Final da infância, ainda pré-púbere na maioria. A abstracção está consolidada: o jogador analisa o próprio jogo e aceita correcção fundamentada. A coordenação está no ponto mais alto. Surgem disparidades maturacionais — nunca descartar o jogador biologicamente atrasado.",
+  obj:["Todo o reportório técnico à velocidade de jogo e sob pressão real","Passe quebra-linhas, raso e no pé correcto do colega","Conduzir em velocidade máxima sem perder bola nem orientação","Finalizar dentro da área, de fora e em segunda bola","Cabecear em salto, defensiva e ofensivamente","Executar rupturas coordenadas a dois e a três","Cumprir a responsabilidade individual nas quatro fases","Identificar onde está o espaço livre e explorá-lo","Jogar com competência em duas posições","Reconhecer o momento e a altura da pressão"],
+  cont:[["Técnica","Reportório completo em velocidade, passe quebra-linhas, cruzamento e remate de primeira, cabeceamento em salto"],["Organização ofensiva","Construção em três fases, ocupação dos cinco corredores, espaço entre linhas, mobilidade coordenada"],["Organização defensiva","Altura e momento da pressão, basculação colectiva, pressão após perda em zona ofensiva"],["Transições","Decisão em dois segundos, equilíbrio preventivo, regra dos sete segundos"],["Esquemas","Cantos ofensivos e defensivos, livres laterais, reposições longas"],["Física","Velocidade máxima e de mudança de direcção, força com peso corporal e medicinal leve, prevenção"]],
+  nao:"Treino de resistência láctica, cargas máximas, cabeceamento em séries repetidas.",
+  mic:"3 sessões de 90 min · 270 min/semana · 1 jogo",
+  ses:[["Activação e prevenção","12","Mobilidade, activação neuromuscular, coordenação, bola em posse"],["Bloco técnico em velocidade","13","Passe, primeiro toque e finalização em execução rápida com oposição"],["Sectorial e intersectorial","20","4x3, 5x4, construção GR + 3 + 2 contra bloco médio"],["Jogo","25","7x7 em campo oficial, com adversário em pressão organizada"],["Finalização e esquemas","10","Finalização com oposição, um esquema por sessão"],["Retorno e balanço","10","Retorno à calma, balanço por questionamento, autoavaliação"]],
+  ex:[["Construção contra bloco médio","GR + 5 contra 4 em meio-campo, objectivo de passar a linha de pressão e chegar ao avançado."],["Jogo de cinco corredores","Ocupação obrigatória de pelo menos quatro. Prepara os espaços que o Futebol 9 e o 11 vão exigir."],["Transição 4x4 com reposição","Sete segundos para recuperar; se falhar, sofre ataque em superioridade."],["7x7 com toques diferenciados","Três toques na própria metade, livres na metade ofensiva. Decisão rápida na construção."]]},
+
+ {id:"sub-12",tag:"Sub-12",nm:"Infantis B",meta:"Juniores «D» · AF Lisboa",fmt:"Futebol 7",est:"1-2-3-1 · 1-3-2-3 no 3.º trimestre",
+  campo:"Último ano de Futebol 7; Futebol 9 em treino no terceiro trimestre",
+  foco:"Primeiro escalão com especialização posicional e gestão individualizada de carga. Prepara-se a entrada no Futebol 9.",
+  carac:"Parte do grupo entra no pico de crescimento: descoordenação transitória, maior risco de sobrecarga tendinosa e disparidades físicas acentuadas no mesmo plantel. A abstracção é plena — compreende um modelo com princípios e subprincípios. A autoridade passa a ser questionada: a intervenção tem de ser fundamentada.",
+  obj:["Executar os princípios e subprincípios do modelo nas quatro fases","Resolver em dois toques em espaço reduzido com oposição real","Passe de 30 a 35 m; mudança de corredor num só passe","Finalizar com eficácia de várias distâncias e ângulos, de cabeça incluída","Dominar uma posição principal e manter uma alternativa","Distinguir quando acelerar o jogo e quando o segurar","Marcar individualmente, em zona e defender em inferioridade","Cumprir função atribuída em cantos, livres e reposições","Reconhecer e comunicar o próprio nível de fadiga"],
+  cont:[["Técnica","Pressão temporal máxima, passe longo e diagonal, cruzamento tenso e atrasado, finalização de cabeça, técnica da posição"],["Organização ofensiva","Construção em três fases no 1-2-3-1, amplitude dos alas, médio interior entre linhas, mudança de corredor"],["Organização defensiva","Bloco médio-alto, pressão orientada, coberturas e dobras, defesa da profundidade"],["Transições","Sete segundos na metade ofensiva, ataque pelos corredores, equilíbrio preventivo"],["Esquemas","Dois cantos ofensivos, organização defensiva de canto, dois livres ensaiados"],["Física","Força com peso corporal e técnica dos padrões de agachamento, afundo e dobradiça de anca; velocidade e prevenção"]],
+  nao:"Cargas máximas, trabalho até à falha, resistência láctica.",
+  mic:"3 a 4 sessões de 90 min · 270 a 360 min/semana · 1 jogo",
+  ses:[["Activação, prevenção e força","15","Mobilidade, circuito de força com peso corporal, prevenção de anca, joelho e tornozelo"],["Bloco técnico sob pressão","15","Rondos, posse 4x4+3, finalização em pressão temporal"],["Sectorial e intersectorial","20","Construção GR + 4 contra bloco, 5x5 em meio-campo, trabalho por posição"],["Jogo","25","7x7 em campo oficial; 9x9 no terceiro trimestre"],["Esquemas e finalização","10","Um esquema por sessão, finalização com oposição"],["Retorno e balanço","5","Retorno à calma e registo de percepção de esforço"]],
+  ex:[["Construção contra bloco de pressão","GR mais quatro contra três, com três saídas possíveis no meio-campo."],["Rondo 4x4+3 com saída em profundidade","Dois passes seguidos habilitam passe para apoio exterior."],["7x7 com corredor central condicionado","O corredor central fica interdito em certas fases. Instala a amplitude que o 1-3-2-3 vai exigir."],["Sete segundos em metade ofensiva","6x6 em meio-campo. É o exercício-assinatura do clube."],["9x9 adaptativo","Futebol 9 com paragens dirigidas para explicar o 1-3-2-3. Reservado ao terceiro trimestre."]]},
+
+ {id:"sub-13",tag:"Sub-13",nm:"Infantis A",meta:"Juniores «D» · AF Lisboa",fmt:"Futebol 9",est:"1-3-2-3 · 3-4-3 no 3.º trimestre",
+  campo:"Futebol 11 em jogos-treino no terceiro trimestre",
+  foco:"Fecha a formação de base e entrega ao Futebol 11 um jogador que já conhece o modelo do clube.",
+  carac:"A maioria está no pico de crescimento ou logo depois. A força torna-se treinável com progressão de carga e a capacidade aeróbia responde ao estímulo. As diferenças maturacionais atingem o máximo: é aqui que os clubes perdem por engano os jogadores de maturação tardia.",
+  obj:["Dominar o modelo em Futebol 9 e a sua tradução para o 3-4-3","Manter eficácia técnica em alta intensidade e espaços curtos","Decidir correctamente nos últimos minutos de jogo e de exercício","Assumir todas as responsabilidades da sua posição nas quatro fases","Subir, descer e compactar o bloco com referências de distância","Defender por zona com trocas e coberturas","Executar variantes de canto e de livre","Analisar o próprio desempenho com vocabulário táctico correcto","Cumprir rotinas de activação, recuperação, hidratação e sono sem supervisão"],
+  cont:[["Técnica","Técnica em intensidade competitiva, mudança de flanco, cruzamento em velocidade, finalização em espaço curto, intercepção"],["Organização ofensiva","Três fases com ocupação dos cinco corredores, superioridade no corredor lateral, finalização de centro"],["Organização defensiva","Bloco médio e alto, pressão em zona, defesa do corredor central e da profundidade com linha de três"],["Transições","Sete segundos consolidados, contra-ataque em quatro, equilíbrio preventivo permanente"],["Esquemas","Três cantos ofensivos, dois livres, organização defensiva mista"],["Física","Força com progressão de carga, potência, velocidade máxima, resistência específica em jogo reduzido"]],
+  nao:"Cargas máximas sem supervisão directa, corrida contínua como meio de treino.",
+  mic:"4 sessões de 90 min · 360 min/semana · 1 jogo · carga diferenciada por dia",
+  ses:[["Activação, prevenção e força","18","Mobilidade, activação neuromuscular, força com progressão de carga"],["Bloco técnico-táctico","15","Rondos, posse com oposição, técnica específica por posição"],["Sectorial e intersectorial","20","Construção, pressão, transições; subprincípio da semana"],["Jogo","25","9x9 em campo oficial; 11x11 no terceiro trimestre"],["Esquemas e finalização","7","Variantes de esquema, finalização em fadiga"],["Retorno e balanço","5","Retorno à calma e registo de percepção de esforço"]],
+  ex:[["Construção 9x9 com três zonas de pontuação","Passar a linha de pressão vale um, chegar ao último terço dois, finalizar três."],["Jogo de posição 5x5+3 em três corredores","Os apoios exteriores obrigam à mudança de corredor e ao passe longo de flanco."],["Contra-ataque em quatro","Ganho em meio-campo e ataque 4x3 em oito segundos, com reposição contínua."],["11x11 explicado","Futebol 11 com paragens dirigidas para traduzir cada função do 1-3-2-3 para o 3-4-3."]]}
+];
+
+var MICROTAB=[["Sub-7","2","60 min","120 min"],["Sub-8","2","75 min","150 min"],["Sub-9","2 a 3","75 min","150 a 225 min"],
+ ["Sub-10","3","90 min","270 min"],["Sub-11","3","90 min","270 min"],["Sub-12","3 a 4","90 min","270 a 360 min"],["Sub-13","4","90 min","360 min"]];
+
+var FORMATOS=[
+ {f:"Futebol 3",sc:"Sub-7",st:"Sem sistema",nt:"Só bola e baliza",d:[[38,66],[68,40],[98,66]],gk:false},
+ {f:"Futebol 5",sc:"Sub-8 e Sub-9",st:"Losango 1-1-2-1",nt:"Largura e apoio",d:[[68,34],[32,78],[104,78],[68,118]],gk:true},
+ {f:"Futebol 7",sc:"Sub-10 a Sub-12",st:"1-3-2-1 e 1-2-3-1",nt:"Linha de três e duplo médio",d:[[68,34],[46,78,1],[90,78,1],[28,120,1],[68,120,1],[108,120,1]],gk:true},
+ {f:"Futebol 9",sc:"Sub-13",st:"1-3-2-3",nt:"Entram os extremos",d:[[28,34],[68,34],[108,34],[46,78,1],[90,78,1],[28,120,1],[68,120,1],[108,120,1]],gk:true},
+ {f:"Futebol 11",sc:"Sub-14 e sénior",st:"3-4-3 e 5-2-3",nt:"Extremos passam a alas",d:[[28,30],[68,30],[108,30],[18,72],[50,82,1],[86,82,1],[118,72],[28,120,1],[68,120,1],[108,120,1]],gk:true}
+];
+
+var SESSAO_PESO=[["Activação, coordenação e prevenção","17%","13%","18%"],["Bloco técnico em contexto","22%","17%","17%"],
+ ["Bloco táctico ou jogo condicionado","25%","24%","22%"],["Jogo","25%","30%","28%"],["Finalização, esquemas e retorno","11%","16%","15%"]];
+
+var REGRAS=[
+ "Todo o exercício tem bola e um objectivo de progressão ou finalização identificável pelo jogador.",
+ "Máximo de seis jogadores por estação. Filas com mais de três em espera estão interditas.",
+ "A partir do Sub-8 toda a situação tem oposição, salvo correcção técnica pontual abaixo de cinco minutos.",
+ "O exercício tem de produzir o comportamento pela sua estrutura. Se é preciso explicá-lo o tempo todo, está mal desenhado.",
+ "Progressão obrigatória em três níveis: sem oposição, oposição condicionada, oposição real.",
+ "Relação trabalho/pausa definida antes da sessão. Velocidade: pausa cinco vezes o esforço. Jogo reduzido: pausa igual ao esforço.",
+ "Princípio ofensivo treina-se em superioridade numérica; princípio defensivo, em inferioridade.",
+ "O espaço regula a decisão: reduzir exige mais técnica, ampliar exige mais táctica.",
+ "Duração máxima de um exercício: 8 min no Sub-7/8, 12 min do Sub-9 ao Sub-11, 15 min no Sub-12/13.",
+ "Cada sessão tem um único foco declarado. O que não serve o foco só entra como activação ou retorno."
+];
+
+var FAMILIAS=[
+ ["Jogos lúdicos com bola","Perseguições, apanhadas e desafios com bola","Espaço livre, uma bola por jogador","5 a 10 min","Todo o grupo"],
+ ["Circuito técnico","Estações de repetição de um gesto","Três a quatro estações em paralelo","8 a 12 min","Até 6 por estação"],
+ ["Técnica analítica","Execução do gesto sem oposição","Pares frente a frente ou triângulos","5 a 8 min","2 a 3 por grupo"],
+ ["Técnica com oposição","1x1, 2x1 e 2x2 com defensor limitado","Espaços curtos com baliza ou linha","8 a 12 min","2 a 4 por campo"],
+ ["Rondo e manutenção de posse","Posse em superioridade com pressionadores ao centro","Quadrado ou círculo","8 a 12 min","5 a 9"],
+ ["Jogo de posição","Posse com corredores, zonas e apoios exteriores","Campo dividido em zonas","10 a 15 min","8 a 14"],
+ ["Jogo reduzido condicionado","Jogo com balizas e a regra do princípio da semana","Campo reduzido com balizas e GR","10 a 20 min","6 a 14"],
+ ["Sectorial e intersectorial","Construção, pressão ou transição com as linhas","Meio-campo com oposição orientada","12 a 20 min","10 a 16"],
+ ["Finalização","Circuitos e situações de remate","Último terço, uma ou duas balizas","8 a 12 min","Até 8 por baliza"],
+ ["Jogo formal","Jogo no formato de competição, sem interrupções","Campo oficial do escalão","15 a 25 min","Formato do escalão"]
+];
+var MATRIZ=[[2,2,1,1,1,0,0],[2,2,2,1,1,1,0],[1,1,1,1,1,1,1],[2,2,2,2,2,1,1],[0,1,1,2,2,2,2],
+ [0,0,1,1,2,2,2],[2,2,2,2,2,2,2],[0,0,1,2,2,2,2],[1,1,2,2,2,2,2],[2,2,2,2,2,2,2]];
+
+var CONSTR=[
+ ["Ocupar espaço próprio","Cada jogador parte de uma zona; sair antes de a bola passar o meio-campo anula o golo","3x3 em quatro zonas","Sub-7 a Sub-9"],
+ ["Largura","O golo só conta se a bola tiver passado por um corredor lateral","4x4 mais um apoio por corredor","Sub-8 a Sub-13"],
+ ["Profundidade","Zona de ponta em que só entra quem recebe em movimento","5x5 com zona final","Sub-9 a Sub-13"],
+ ["Apoio ao portador","Máximo de três segundos com bola","3x3 ou 4x4 em espaço curto","Sub-8 a Sub-13"],
+ ["Primeiro toque orientado","Dois toques obrigatórios: o primeiro orienta, o segundo joga","Rondo 4x2","Sub-9 a Sub-13"],
+ ["1x1 ofensivo","Zona de duelo sem ajuda defensiva permitida","4x4 com zonas laterais","Sub-7 a Sub-13"],
+ ["Mudança de corredor","O golo vale a dobrar se a bola passou pelos três corredores","6x6 em três corredores","Sub-10 a Sub-13"],
+ ["Pressão após perda","Sete segundos para recuperar; se falhar, reposição ao adversário","5x5 ou 6x6","Sub-9 a Sub-13"],
+ ["Orientação da pressão","O golo sofrido após bola no corredor central vale a dobrar","6x6 em três corredores","Sub-10 a Sub-13"],
+ ["Compactação do bloco","Ninguém a mais de 20 m do colega mais próximo; a infracção dá posse","7x7 em campo oficial","Sub-11 a Sub-13"],
+ ["Velocidade de decisão","Dois toques na própria metade, livres na metade ofensiva","7x7 ou 9x9","Sub-11 a Sub-13"],
+ ["Transição ofensiva rápida","Oito segundos para finalizar após o ganho","4x3 com reposição contínua","Sub-10 a Sub-13"],
+ ["Saída de bola","Um ponto por passar a pressão, dois pelo último terço, três por finalizar","GR mais quatro contra três","Sub-10 a Sub-13"]
+];
+
+var NIVEIS=[
+ ["1 — Aquisição","Nenhuma, ou defensor passivo","Amplo","Oito em cada dez execuções correctas"],
+ ["2 — Aplicação","Defensor condicionado em acção ou espaço","Reduzido","O comportamento aparece sem o treinador o pedir"],
+ ["3 — Competência","Real, em jogo","De competição","Mantém-se no jogo formal e sob fadiga"]
+];
+
+var JANELAS=[
+ ["Coordenação, equilíbrio, lateralidade, ritmo","6 aos 11 anos","Sub-7 a Sub-11","Jogos coordenativos, escada, arcos, saltos, trabalho bilateral"],
+ ["Velocidade de reacção","7 aos 9 e 11 aos 13","Sub-8, Sub-9, Sub-12, Sub-13","Reacção a sinal, 1x1 com partida provocada"],
+ ["Frequência gestual","7 aos 11 anos","Sub-8 a Sub-11","Skipping, corridas de 5 a 10 m, coordenação de passada"],
+ ["Aceleração e mudança de direcção","9 aos 13 anos","Sub-10 a Sub-13","Sprints de 10 a 20 m com pausa completa"],
+ ["Amplitude articular","6 aos 10 e pós-pico","Sub-7 a Sub-10 e Sub-13","Mobilidade dinâmica na activação; alongamento só no retorno"],
+ ["Força com peso corporal","8 aos 12 anos","Sub-9 a Sub-12","Jogos de oposição, trepar, saltar, padrões fundamentais"],
+ ["Força com carga externa","Após o pico de crescimento","Sub-13","Progressão técnica com carga leve, sempre supervisionada"],
+ ["Capacidade aeróbia","Após o pico de crescimento","Sub-13","Jogo reduzido com densidade elevada; nunca corrida contínua"]
+];
+
+var INTERDITO=[
+ "Corrida contínua prolongada como meio de treino, em qualquer escalão.",
+ "Resistência láctica, séries longas e repetições de 200 a 400 metros.",
+ "Cargas máximas ou submáximas e qualquer exercício levado à falha.",
+ "Pliometria de alta intensidade antes do Sub-12.",
+ "Alongamento estático prolongado antes do treino ou do jogo.",
+ "Cabeceamento repetido com bola de peso oficial antes do Sub-11.",
+ "Corrida como punição, em qualquer circunstância e escalão."
+];
+
+var TEMPOS=[["Sub-7 a Sub-9","50% do tempo total","Rotação igualitária. Não existe titular; todos passam por todos os sectores"],
+ ["Sub-10 e Sub-11","50% do tempo total","Rotação por blocos de jornadas, com capitania rotativa"],
+ ["Sub-12 e Sub-13","40% do tempo total","Assiduidade e atitude podem reduzir; o nível de rendimento, por si só, não"]];
+
+var PESOS=[["Técnica","40%","35%","30%"],["Táctica","10%","25%","30%"],["Física e coordenativa","20%","15%","15%"],["Psicossocial e atitudinal","30%","25%","25%"]];
+
+/* ============ RENDER ============ */
+function el(h){var d=document.createElement("div");d.innerHTML=h;return d.firstElementChild}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function tbl(head,rows,cls){
+  var h="<div class='tw'><table"+(cls?" class='"+cls+"'":"")+"><thead><tr>";
+  head.forEach(function(x){h+="<th>"+esc(x)+"</th>"});
+  h+="</tr></thead><tbody>";
+  rows.forEach(function(r){h+="<tr>";r.forEach(function(c,i){h+="<td"+(i===0?" class='n'":"")+">"+esc(c)+"</td>"});h+="</tr>"});
+  return h+"</tbody></table></div>";
+}
+function sec(id,eyebrow,title,inner){
+  return "<section id='"+id+"'><p class='eyebrow'>"+esc(eyebrow)+"</p><h2>"+esc(title)+"</h2><div class='hr'></div>"+inner+"</section>";
+}
+
+var html="";
+
+/* 1 princípios */
+var c="<p class='lede'>Oito decisões metodológicas vinculam todas as equipas do departamento. Tudo o resto é autonomia do treinador dentro destes limites.</p><div class='cards'>";
+PRINCIPIOS.forEach(function(p,i){c+="<div class='card'><div class='num'>"+(i+1<10?"0":"")+(i+1)+"</div><h4>"+esc(p[0])+"</h4><p>"+esc(p[1])+"</p></div>"});
+c+="</div><h3>Critérios de qualidade verificáveis</h3>"+tbl(["Indicador","Padrão exigido","Verificação"],QUALIDADE);
+html+=sec("principios","Secção 1","Princípios orientadores",c);
+
+/* 2 etapas */
+c="<p class='lede'>O percurso Sub-7 a Sub-13 divide-se em três etapas. As duas passagens entre elas são critérios de conteúdo, não datas.</p><div class='etapas'>";
+ETAPAS.forEach(function(e){
+  c+="<div class='etapa"+(e.lead?" lead":"")+"'><b>"+esc(e.n)+"</b><div class='sc'>"+esc(e.sc)+"</div><span class='fm'>"+esc(e.fm)+"</span><ul>";
+  e.g.forEach(function(g){c+="<li>"+esc(g)+"</li>"});c+="</ul></div>";
+});
+c+="</div>";
+PASSAGENS.forEach(function(p){c+="<div class='gate'><b>"+esc(p[0])+"</b><span>"+esc(p[1])+"</span></div>"});
+c+="<p class='note'>Quando uma passagem não está cumprida, o conteúdo da etapa anterior mantém-se no plano da etapa seguinte até estar adquirido. É o conteúdo que atrasa, nunca o jogador que recua de escalão.</p>";
+html+=sec("etapas","Secção 2","Etapas de desenvolvimento",c);
+
+/* 3 distribuição */
+c="<p class='lede'>Peso relativo de cada dimensão no tempo de treino. Técnica e táctica cruzam-se entre o Sub-11 e o Sub-12.</p><div class='dist'>";
+DIST.forEach(function(r){
+  c+="<div class='distrow'><span class='lb'>"+esc(r[0])+"</span><div class='bar'>";
+  for(var i=1;i<=4;i++){c+="<i class='s"+i+"' style='width:"+r[i]+"%'>"+(r[i]>=12?r[i]+"%":"")+"</i>"}
+  c+="</div></div>";
+});
+c+="</div><div class='key'>";
+DIMS.forEach(function(d,i){c+="<span><i class='s"+(i+1)+"'></i>"+esc(d)+"</span>"});
+c+="</div><p class='note' style='margin-top:14px'>São percentagens de conteúdo dominante, não blocos separados da sessão: a táctica treina-se dentro do jogo e a técnica também. A dimensão física mantém-se perto de um quinto em todas as idades porque muda de conteúdo, não de volume.</p>";
+html+=sec("conteudos","Secção 3","Distribuição de conteúdos",c);
+
+/* 4-10 escalões */
+ESC.forEach(function(e,n){
+  var b="<div class='esc'><header><span class='tag'>"+esc(e.tag)+"</span><span><span class='nm'>"+esc(e.nm)+"</span><br><span class='meta'>"+esc(e.meta)+"</span></span>"+
+    "<span class='pills'><span class='pill'>"+esc(e.fmt)+"</span><span class='pill plain'>"+esc(e.est)+"</span></span></header><div class='body'>"+
+    "<div class='foco'>"+esc(e.foco)+"</div>"+
+    "<p class='note'><b>Enquadramento.</b> "+esc(e.campo)+"</p>"+
+    "<h4>Caracterização do praticante</h4><p>"+esc(e.carac)+"</p>"+
+    "<div class='two'><div><h4>Objectivos terminais da época</h4><ul class='tick'>";
+  e.obj.forEach(function(o){b+="<li>"+esc(o)+"</li>"});
+  b+="</ul></div><div><h4>Conteúdos prioritários</h4><ul class='tick'>";
+  e.cont.forEach(function(k){b+="<li><b>"+esc(k[0])+".</b> "+esc(k[1])+"</li>"});
+  b+="</ul></div></div>";
+  if(e.nao){b+="<div class='warn'><b>Não se treina neste escalão.</b> "+esc(e.nao)+"</div>"}
+  b+="<h4>Microciclo</h4><p class='note'>"+esc(e.mic)+"</p>"+
+     tbl(["Bloco","Min","Conteúdo"],e.ses)+
+     "<h4>Exercícios de referência</h4><ul class='tick'>";
+  e.ex.forEach(function(x){b+="<li><b>"+esc(x[0])+".</b> "+esc(x[1])+"</li>"});
+  b+="</ul></div></div>";
+  html+=sec(e.id,"Secção "+(4+n),e.tag+" · "+e.nm,b);
+});
+
+/* 11 modelo */
+c="<p class='lede'>Do Futebol 3 ao Futebol 11 muda-se uma coisa de cada vez. A dourado, os jogadores cuja função se mantém até à equipa sénior.</p><div class='pitches'>";
+FORMATOS.forEach(function(f){
+  var s="<svg viewBox='0 0 136 150' role='img' aria-label='"+esc(f.f)+", "+esc(f.st)+"'>"+
+    "<rect x='1' y='1' width='134' height='148' rx='7' fill='none' stroke='#DAD8D1' stroke-width='1.5'/>"+
+    "<line x1='1' y1='75' x2='135' y2='75' stroke='#EDEBE5' stroke-width='1.5'/>";
+  f.d.forEach(function(p){
+    var hot=p[2]===1;
+    s+="<circle cx='"+p[0]+"' cy='"+p[1]+"' r='7' fill='"+(hot?"#C9A227":"#C9C6BC")+"' stroke='"+(hot?"#A8841C":"#B2AFA4")+"' stroke-width='1.2'/>";
+  });
+  if(f.gk){s+="<circle cx='68' cy='140' r='6' fill='#E2E0D8' stroke='#B2AFA4' stroke-width='1.2'/>"}
+  s+="</svg>";
+  c+="<div class='pitch'><b>"+esc(f.f)+"</b><div class='sc'>"+esc(f.sc)+"</div>"+s+
+     "<div class='st'>"+esc(f.st)+"</div><div class='nt'>"+esc(f.nt)+"</div></div>";
+});
+c+="</div><p class='note'>O jogador que chega aos Iniciados já jogou quatro épocas com a mesma linha defensiva e o mesmo miolo. Não tem de aprender um modelo novo: tem de o executar num campo maior.</p>";
+html+=sec("modelo","Secção 11","Progressão do modelo de jogo",c);
+
+/* 12 sessão */
+c="<p class='lede'>Todas as sessões seguem a mesma arquitectura de cinco blocos. O que muda entre escalões é o peso de cada bloco, não a sua existência.</p>"+
+  tbl(["Bloco","Sub-7/8","Sub-9 a 11","Sub-12/13"],SESSAO_PESO)+
+  "<h3>Dez regras de desenho de exercícios</h3><div class='cards'>";
+REGRAS.forEach(function(r,i){c+="<div class='card'><div class='num'>"+(i+1<10?"0":"")+(i+1)+"</div><p>"+esc(r)+"</p></div>"});
+c+="</div><h3>Intervenção do treinador</h3><ul class='tick'>"+
+  "<li><b>Um foco por exercício.</b> Anuncia um objectivo e corrige apenas esse objectivo.</li>"+
+  "<li><b>Máximo de três correcções por jogador e por sessão.</b> Acima disso o jogador deixa de ouvir.</li>"+
+  "<li><b>Três reforços positivos por cada correcção</b>, em todos os escalões desta faixa.</li>"+
+  "<li><b>Questionamento antes da resposta.</b> «O que é que viste?» e «que outra solução tinhas?» antes de «tinhas de passar».</li>"+
+  "<li><b>Silêncio no jogo final.</b> O jogo do fim da sessão serve para observar, não para corrigir.</li></ul>";
+html+=sec("sessao","Secção 12","Estrutura-padrão da sessão",c);
+
+/* 13 matrizes */
+c="<p class='lede'>Que tipo de exercício posso usar nesta idade, e que regra tenho de pôr nele para ensinar o que quero?</p>"+
+  "<h3>As dez famílias</h3>"+tbl(["Família","O que é","Organização","Duração","Jogadores"],FAMILIAS)+
+  "<h3>Que família usar em cada escalão</h3><div class='mx'><table><thead><tr><th class='fam'>Família</th>";
+DIST.forEach(function(d){c+="<th>"+esc(d[0])+"</th>"});
+c+="</tr></thead><tbody>";
+MATRIZ.forEach(function(row,i){
+  c+="<tr><td class='fam'>"+(i+1)+" · "+esc(FAMILIAS[i][0])+"</td>";
+  row.forEach(function(v,j){
+    var t=v===2?"Núcleo da sessão":v===1?"Complementar":"Não se utiliza";
+    c+="<td><div class='cell n"+v+"' title='"+esc(FAMILIAS[i][0])+" · "+esc(DIST[j][0])+": "+t+"'></div></td>";
+  });
+  c+="</tr>";
+});
+c+="</tbody></table></div><div class='key'><span><i class='cell n2' style='width:13px;height:13px'></i>Núcleo da sessão</span>"+
+   "<span><i class='cell n1' style='width:13px;height:13px'></i>Complementar</span>"+
+   "<span><i class='cell n0' style='width:13px;height:13px'></i>Não se utiliza</span></div>"+
+   "<p class='note' style='margin-top:12px'>Uma sessão bem construída tem duas a três famílias de núcleo do seu escalão e nunca mais de uma complementar. Um Sub-8 cuja sessão é feita de rondos está a treinar o escalão errado, tal como um Sub-13 cuja sessão é feita de circuitos técnicos.</p>"+
+   "<h3>Matriz de constrangimentos</h3><p>Um constrangimento é uma regra que obriga o comportamento a aparecer sem o treinador o pedir.</p>"+
+   tbl(["Princípio a ensinar","Constrangimento","Formato","Escalões"],CONSTR)+
+   "<h3>Progressão de qualquer exercício</h3>"+tbl(["Nível","Oposição","Espaço","Critério para subir"],NIVEIS)+
+   "<p class='note'>Para levar um exercício ao escalão seguinte mexe-se numa variável de cada vez e por esta ordem: reduzir o espaço, reduzir o tempo de decisão, aumentar o número de jogadores e, só por fim, acrescentar uma segunda regra. Dois constrangimentos em simultâneo abaixo do Sub-11 produzem confusão, não aprendizagem.</p>";
+html+=sec("exercicios","Secção 13","Matrizes de tipos de exercício",c);
+
+/* 14 periodização */
+c="<p class='lede'>A periodização na formação é de conteúdos, não de forma desportiva: planifica-se a ordem pela qual se ensina.</p>"+
+  tbl(["Mesociclo","Período","Orientação dominante"],[
+   ["Adaptação e diagnóstico","Setembro","Avaliação inicial, hábitos e rotinas, coordenação, técnica individual"],
+   ["Aquisição I","Outubro a Dezembro","Conteúdos técnicos nucleares e organização ofensiva"],
+   ["Aquisição II","Janeiro a Março","Organização defensiva e transições; técnica em velocidade"],
+   ["Consolidação","Abril e Maio","Integração das quatro fases, variantes, esquemas; adaptação ao formato seguinte"],
+   ["Encerramento","Junho","Torneios, avaliação final, reuniões, relatórios de transição"]])+
+  "<h3>Calendário de princípios tácticos</h3>"+
+  tbl(["Bloco","Período","Princípios"],[
+   ["Bloco 1","Setembro e Outubro","Largura · apoio ao portador · orientação do primeiro toque · profundidade"],
+   ["Bloco 2","Novembro e Dezembro","Saída de bola · espaço entre linhas · mudança de corredor · mobilidade do avançado"],
+   ["Bloco 3","Janeiro e Fevereiro","Pressão ao portador · orientação da pressão · cobertura e dobra · compactação"],
+   ["Bloco 4","Março e Abril","Regra dos sete segundos · contra-ataque · equilíbrio preventivo · defesa da profundidade"],
+   ["Bloco 5","Maio e Junho","Integração das quatro fases · esquemas tácticos · adaptação ao formato seguinte"]])+
+  "<h3>Volume por escalão</h3>"+tbl(["Escalão","Sessões","Duração","Volume semanal"],MICROTAB)+
+  "<h3>Regras de carga</h3><ul class='tick'>"+
+  "<li>Nunca dois dias consecutivos de alta intensidade no mesmo microciclo.</li>"+
+  "<li>Pelo menos um dia por semana sem qualquer actividade desportiva organizada.</li>"+
+  "<li>Um jogo oficial por fim-de-semana. Um segundo jogo exige autorização e compensação de carga.</li>"+
+  "<li>O total semanal de actividade do jovem, educação física incluída, é registado no início da época.</li>"+
+  "<li>Nas interrupções escolares reduz-se o volume a metade e mantém-se a frequência.</li>"+
+  "<li>Regresso após lesão: progressão em três sessões antes de jogo, com validação do departamento médico.</li></ul>";
+html+=sec("periodizacao","Secção 14","Periodização da época",c);
+
+/* 15 físico */
+c="<p class='lede'>Até ao Sub-12 o treino físico não tem bloco próprio: desenvolve-se dentro do jogo e do trabalho coordenativo. O que decide a qualidade é treinar a capacidade certa na janela certa.</p>"+
+  tbl(["Capacidade","Janela","Escalões","Meios"],JANELAS)+
+  "<h3>Interdito em toda a faixa Sub-7 a Sub-13</h3><ul class='tick'>";
+INTERDITO.forEach(function(i){c+="<li>"+esc(i)+"</li>"});
+c+="</ul><div class='warn'><b>Pico de crescimento.</b> A estatura mede-se três vezes por época nos Sub-11 a Sub-13. Crescimento acima de sete centímetros em doze meses reduz o volume de impacto, reforça mobilidade e controlo motor, e activa vigilância a queixas no joelho, calcanhar e tuberosidade da tíbia.</div>"+
+  "<div class='warn'><b>Maturação tardia.</b> Nenhum jogador é dispensado por estatura, força ou velocidade sem avaliação da maturidade estimada. Uma vez por mês nos Sub-12 e Sub-13 os grupos de trabalho formam-se por maturidade e não por idade.</div>";
+html+=sec("fisico","Secção 15","Desenvolvimento físico e fases sensíveis",c);
+
+/* 16 avaliação */
+c="<p class='lede'>Três momentos por época — Novembro, Fevereiro e Maio — sobre os objectivos terminais do escalão. Nunca sobre resultados.</p>"+
+  "<p>Escala de quatro níveis: <b>1</b> não adquirido, <b>2</b> em aquisição, <b>3</b> adquirido, <b>4</b> adquirido com domínio.</p>"+
+  tbl(["Dimensão","Sub-7/8","Sub-9 a 11","Sub-12/13"],PESOS)+
+  "<p class='note'>A dimensão psicossocial nunca pesa menos de 25%. Um jogador com avaliação técnica elevada e atitudinal baixa é um caso a trabalhar, não um jogador de referência.</p>"+
+  "<div class='warn'><b>O que não é indicador.</b> Classificação, golos marcados, títulos e resultados de torneio não avaliam o trabalho do treinador em nenhum escalão desta faixa. O critério de sucesso é o número de jogadores que chega ao escalão seguinte com os objectivos terminais adquiridos.</div>";
+html+=sec("avaliacao","Secção 16","Avaliação e indicadores",c);
+
+/* 17 competição */
+c="<p class='lede'>A competição é meio de formação e o tempo de jogo é recurso de treino, não prémio. Quem não joga não aprende.</p>"+
+  tbl(["Escalão","Mínimo por convocado","Regime"],TEMPOS)+
+  "<ul class='tick'><li>Todos os jogadores assíduos são convocados ao longo de cada mês.</li>"+
+  "<li>Nenhum jogador fica sem jogar em duas jornadas consecutivas.</li>"+
+  "<li>O resultado nunca justifica o incumprimento do tempo mínimo. Se cumprir custar um jogo, custou um jogo.</li></ul>"+
+  "<h3>Antecipação de escalão</h3><p>Quatro condições em simultâneo: nível 4 em pelo menos 80% dos objectivos do próprio escalão; maturidade compatível confirmada pela direcção clínica; garantia de 40% de tempo de jogo no destino; parecer do coordenador e dos dois treinadores, com concordância escrita do encarregado de educação. O treino mantém-se no escalão de origem e a decisão é revista ao fim de oito semanas.</p>"+
+  "<div class='warn'><b>Jogar no escalão correcto é um direito do jogador.</b> A manutenção em escalão inferior só é admissível por razões de maturação documentadas, nunca por conveniência competitiva. O argumento de que «ainda não está preparado» aplica-se ao treino que lhe foi dado, não ao jogador.</div>";
+html+=sec("competicao","Secção 17","Competição e tempos de jogo",c);
+
+document.getElementById("main").innerHTML=html+
+ "<div class='foot'>Clube Desportivo de Belas · NIPC 501512519 · Estrada do Casal Outeiro, N.º 26, Belas, Sintra<br>"+
+ "Departamento de Formação · Documento de trabalho do corpo técnico · Revisão anual<br>"+
+ "Os formatos de competição seguem os regulamentos da AF Lisboa em vigor e são confirmados no início de cada época.</div>";
+
+/* índice */
+var secs=[].slice.call(document.querySelectorAll("section"));
+var ix="<p>Fundamentos</p>";
+secs.forEach(function(s,i){
+  var t=s.querySelector("h2").textContent;
+  if(i===3)ix+="<p>Escalões</p>";
+  if(i===10)ix+="<p>Operação</p>";
+  ix+="<a href='#"+s.id+"'>"+esc(t)+"</a>";
+});
+document.getElementById("idx").innerHTML=ix;
+var links=[].slice.call(document.querySelectorAll("nav.index a"));
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id)});
+      }
+    });
+  },{rootMargin:"-88px 0px -70% 0px"});
+  secs.forEach(function(s){io.observe(s)});
+}
+
+/* ============ APRESENTAÇÃO ============ */
+function liList(arr,two){var h="<ul"+(two?" class='two-col'":"")+">";arr.forEach(function(x){h+="<li>"+x+"</li>"});return h+"</ul>"}
+
+var B=[];
+B.push({t:"Capa",cover:true,h:"Metodologia de Treino",s:"Sub-7 a Sub-13 · Época 2026/2027"});
+B.push({t:"Os oito princípios",eb:"Fundamentos",h:"Oito decisões vinculam todas as equipas",
+  b:liList(PRINCIPIOS.map(function(p){return "<b>"+esc(p[0])+".</b> "+esc(p[1])}),true)});
+B.push({t:"Qualidade",eb:"Fundamentos",h:"O que é verificável numa sessão",
+  b:liList(QUALIDADE.slice(0,6).map(function(q){return "<b>"+esc(q[0])+"</b> — "+esc(q[1])}))});
+B.push({t:"Três etapas",eb:"Fundamentos",h:"Três etapas, duas passagens",
+  b:liList(ETAPAS.map(function(e){return "<b>"+esc(e.n)+"</b> · "+esc(e.sc)+" · "+esc(e.fm)+" — "+esc(e.g[0])})
+   .concat(PASSAGENS.map(function(p){return "<b>"+esc(p[0])+".</b> "+esc(p[1])})))});
+B.push({t:"Distribuição",eb:"Fundamentos",h:"A táctica sobe de 5% para 38%",
+  s:"Peso de cada dimensão no tempo de treino, do Sub-7 ao Sub-13.",
+  big:[["5% → 38%","Táctica"],["45% → 26%","Técnica"],["~20%","Física, em todas as idades"],["≥ 15%","Psicossocial, sempre"]]});
+ESC.forEach(function(e){
+  B.push({t:e.tag,eb:e.tag+" · "+e.nm,h:e.foco,s:e.fmt+" · "+e.est+" · "+e.mic,
+    b:liList(e.obj.slice(0,6).map(esc),true)});
+});
+B.push({t:"Modelo de jogo",eb:"Modelo",h:"Do Futebol 3 ao 11 muda-se uma coisa de cada vez",
+  b:liList(FORMATOS.map(function(f){return "<b>"+esc(f.f)+"</b> · "+esc(f.sc)+" · "+esc(f.st)+" — "+esc(f.nt)}))});
+B.push({t:"Sessão",eb:"Operação",h:"Cinco blocos, sempre os mesmos",
+  b:liList(SESSAO_PESO.map(function(s){return "<b>"+esc(s[0])+"</b> — Sub-7/8 "+s[1]+" · Sub-9 a 11 "+s[2]+" · Sub-12/13 "+s[3]}))});
+B.push({t:"Regras de desenho",eb:"Operação",h:"Dez regras de desenho de exercícios",
+  b:liList(REGRAS.map(esc),true)});
+B.push({t:"Famílias",eb:"Exercícios",h:"As dez famílias de exercício",
+  b:liList(FAMILIAS.map(function(f,i){return "<b>"+(i+1)+" · "+esc(f[0])+"</b> — "+esc(f[2])+" · "+esc(f[3])}),true)});
+B.push({t:"Matriz por escalão",eb:"Exercícios",h:"A sessão muda de família com a idade",
+  b:liList(["<b>Núcleo em todas as idades</b> — jogo reduzido condicionado e jogo formal",
+   "<b>Sai com a idade</b> — jogos lúdicos e circuito técnico, núcleo até ao Sub-9",
+   "<b>Entra com a idade</b> — rondo e jogo de posição a partir do Sub-10, sectorial a partir do Sub-10",
+   "<b>Constante</b> — técnica analítica, sempre complementar, nunca núcleo",
+   "<b>Regra</b> — duas a três famílias de núcleo por sessão e nunca mais de uma complementar"])});
+B.push({t:"Constrangimentos",eb:"Exercícios",h:"A regra faz o comportamento aparecer",
+  s:"O treinador não pede o comportamento: desenha o exercício que o obriga.",
+  b:liList(CONSTR.slice(0,7).map(function(x){return "<b>"+esc(x[0])+"</b> — "+esc(x[1])}))});
+B.push({t:"Progressão",eb:"Exercícios",h:"Três níveis, sempre",
+  b:liList(NIVEIS.map(function(n){return "<b>"+esc(n[0])+"</b> — "+esc(n[1])+", espaço "+esc(n[2].toLowerCase())+". Sobe quando: "+esc(n[3].toLowerCase())}))});
+B.push({t:"Janelas sensíveis",eb:"Físico",h:"Treinar a capacidade certa na janela certa",
+  b:liList(JANELAS.map(function(j){return "<b>"+esc(j[0])+"</b> — "+esc(j[1])+" · "+esc(j[2])}),true)});
+B.push({t:"Interdições",eb:"Físico",h:"O que não se faz em nenhum escalão",
+  b:liList(INTERDITO.map(esc))});
+B.push({t:"Tempos de jogo",eb:"Competição",h:"Quem não joga não aprende",
+  big:[["50%","mínimo, Sub-7 a Sub-11"],["40%","mínimo, Sub-12 e Sub-13"],["0","jogadores sem jogar duas jornadas seguidas"]],
+  b:liList(["O resultado nunca justifica o incumprimento do tempo mínimo.","Se cumprir custar um jogo, custou um jogo."])});
+B.push({t:"Avaliação",eb:"Avaliação",h:"O que conta e o que não conta",
+  b:liList(["<b>Conta</b> — objectivos terminais do escalão, em três momentos por época",
+   "<b>Conta</b> — a dimensão psicossocial, nunca abaixo de 25%",
+   "<b>Não conta</b> — classificação, golos, títulos e resultados de torneio",
+   "<b>Critério de sucesso</b> — quantos jogadores chegam ao escalão seguinte com os objectivos adquiridos"])});
+B.push({t:"Fecho",eb:"",h:"",quote:"O critério não é o que ganhámos este fim-de-semana. É quantos jogadores entregamos ao escalão seguinte a saber jogar."});
+
+var cur=0;
+function paint(){
+  var b=B[cur],h="";
+  if(b.cover){
+    h="<div class='plaquebig'><img alt='CD Belas' src='"+document.getElementById("logo").src+"'></div>"+
+      "<div class='eb'>Clube Desportivo de Belas · Departamento de Formação</div>"+
+      "<h2>"+esc(b.h)+"</h2><div class='sub'>"+esc(b.s)+"</div>";
+  }else if(b.quote){
+    h="<div class='quote'>"+esc(b.quote)+"</div>";
+  }else{
+    if(b.eb)h+="<div class='eb'>"+esc(b.eb)+"</div>";
+    h+="<h2>"+esc(b.h)+"</h2>";
+    if(b.s)h+="<div class='sub'>"+esc(b.s)+"</div>";
+    if(b.big){h+="<div class='big'>";b.big.forEach(function(x){h+="<div><div class='v'>"+esc(x[0])+"</div><div class='k'>"+esc(x[1])+"</div></div>"});h+="</div>"}
+    if(b.b)h+=b.b;
+  }
+  var bd=document.getElementById("board");
+  bd.className="board"+(b.cover?" cover":"");
+  bd.innerHTML=h;
+  bd.scrollTop=0;
+  document.getElementById("ct").textContent=(cur+1)+" / "+B.length;
+  document.getElementById("tt").textContent=b.t;
+  document.getElementById("prog").style.width=((cur+1)/B.length*100)+"%";
+}
+function go(d){cur=Math.min(B.length-1,Math.max(0,cur+d));paint()}
+function present(on){
+  document.body.classList.toggle("present",on);
+  document.getElementById("mEstudo").setAttribute("aria-pressed",String(!on));
+  document.getElementById("mApres").setAttribute("aria-pressed",String(on));
+  if(on){paint();try{document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()}catch(e){}}
+  else{try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}}
+}
+document.getElementById("mApres").addEventListener("click",function(){present(true)});
+document.getElementById("mEstudo").addEventListener("click",function(){present(false)});
+document.getElementById("sair").addEventListener("click",function(){present(false)});
+document.getElementById("next").addEventListener("click",function(){go(1)});
+document.getElementById("prev").addEventListener("click",function(){go(-1)});
+document.addEventListener("keydown",function(e){
+  if(!document.body.classList.contains("present"))return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"||e.key===" "){e.preventDefault();go(1)}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();go(-1)}
+  else if(e.key==="Escape"){present(false)}
+});
+</script>
+</body>
+</html>
